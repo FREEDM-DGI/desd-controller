@@ -33,9 +33,9 @@ int main(int argc, char* argv[])
     std::string hostname, port, serial_port;
 
     od.add_options()
-        ("dgi-hostname,h",
+        ("dgi-address,a",
          po::value<std::string>(&hostname)->default_value("localhost"),
-         "hostname of DGI")
+         "hostname or IP address of DGI")
         ("dgi-port,p",
          po::value<std::string>(&port)->default_value("53000"),
          "DGI TCP port to connect to")
