@@ -21,7 +21,10 @@
 
 int main()
 {
-    // FIXME this really must not be hardcoded, but this is due today...
-    DgiInterface dgi_interface("localhost", "5000", "/dev/ttyS1");
+    // FIXME catch SIGINT, SIGTERM and stop DESD before quitting
+    // (may or may not be important :-)
+
+    // FIXME should not be hardcoded
+    DgiInterface dgi_interface("localhost", "53000", "/dev/ttyS0");
     dgi_interface.Run();
 }

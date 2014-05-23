@@ -40,18 +40,6 @@ const float null_command = std::pow(10, 8);
 }
 
 /**
- * A non-fatal error: the DgiInterface should attempt to reconnect to the DGI.
- */
-class MustReconnect : public std::runtime_error
-{
-public:
-    MustReconnect(std::string what)
-        : std::runtime_error(what)
-    {
-    }
-};
-
-/**
  * Constructs a DgiInterface.
  */
 DgiInterface::DgiInterface(std::string hostname, std::string port,
@@ -86,7 +74,7 @@ void DgiInterface::Run()
         {
             m_io_service.run();
         }
-        catch (MustReconnect& e)
+        catch (std::exception& e)
         {
             std::cout << "Reconnecting after DGI error:\n" << e.what();
             std::cout.flush();
@@ -128,7 +116,7 @@ void DgiInterface::SendHello()
 {
     std::cout << "Sending Hello message to DGI..." << std::endl;
     Write("Hello\r\n"
-          "DESD Controller\r\n" +
+          "desd-controller\r\n" +
           device_type + " " + DEVICE_NAME + "\r\n");
     std::cout << "Successfully sent Hello" << std::endl;
 
@@ -158,8 +146,7 @@ void DgiInterface::SendState()
         boost::lexical_cast<std::string>(m_desd_interface.GetPowerLevel());
     std::cout << "Got power level from DESD, sending to DGI..." << std::endl;
     Write("DeviceStates\r\n" +
-          DEVICE_NAME + " " + device_signal + " " + power_level + "\r\n"
-          "\r\n");
+          DEVICE_NAME + " " + device_signal + " " + power_level + "\r\n");
     std::cout << "Successfully sent power level to DGI" << std::endl;
 
     // FIXME timeout must not be hardcoded
@@ -190,9 +177,7 @@ void DgiInterface::RelayCommand()
     iss >> power_level;
     if (!iss)
         throw std::runtime_error("Bad power level in DeviceCommands message");
-    iss >> word;
-    if (!iss || word != "\r\n\r\n")
-        throw std::runtime_error("Extra content in DeviceCommands message");
+    // FIXME error out if there is extra content in the message
 
     if (power_level != null_command)
     {
@@ -212,14 +197,13 @@ void DgiInterface::RelayCommand()
 }
 
 /**
- * Receives a message from the DGI. (A message is terminated by \r\n\r\n.)
+ * Receives a message from the DGI.
  *
  * @return the received message
  */
 std::string DgiInterface::ReadMessage()
 {
     std::string message, line;
-
     do
     {   // In this order, to trim the trailing CRLF
         message += line;
@@ -240,11 +224,7 @@ std::string DgiInterface::ReadMessage()
         if (message.find("Duplicate session") != std::string::npos ||
             message.find("Connection closed") != std::string::npos)
         {
-            throw MustReconnect(message);
-        }
-        else
-        {
-            throw std::runtime_error("Unknown DGI error:\n" + message);
+            throw std::runtime_error("DGI error:" + message);
         }
     }
 
@@ -258,7 +238,7 @@ std::string DgiInterface::ReadMessage()
  */
 void DgiInterface::Write(std::string message)
 {
-    std::cout << "Sending message to DGI: " << message;
+    std::cout << "Sending message to DGI:\n" << message;
     std::cout.flush();
     IOInterface::Write(message + "\r\n");
     std::cout << "Send complete" << std::endl;

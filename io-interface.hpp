@@ -22,6 +22,7 @@
 
 #include <string>
 
+#include <boost/array.hpp>
 #include <boost/asio.hpp>
 
 /**
@@ -59,18 +60,20 @@ public:
     }
 
     /**
-     * Reads one line from the peer
+     * Reads a line from the peer
+     *
+     * @param until the string to read until (included in result)
      *
      * @return line from the peer, line ending included
      */
     virtual std::string ReadLine()
     {
-        boost::asio::read_until(m_stream, m_streambuf, "\r\n");
+        boost::asio::read_until(m_stream, m_streambuf, '\n');
 
         std::istream is(&m_streambuf);
         std::string result;
         std::getline(is, result);
-        result += "\r\n"; // getline discards delimiter
+        result += '\n'; // getline discards delimiter
 
         return result;
     }
