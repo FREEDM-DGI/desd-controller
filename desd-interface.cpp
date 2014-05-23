@@ -37,7 +37,6 @@ DesdInterface::DesdInterface(boost::asio::io_service& io_service,
     : IOInterface(m_serial_port),
       m_serial_port(io_service, serial_port)
 {
-    std::cout << "Discarding DESD's intro prompt" << std::endl;
 }
 
 /**
