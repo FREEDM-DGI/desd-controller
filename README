@@ -1,0 +1,15 @@
+This is a plug and play device controller that sits between a FREEDM DESD and
+the DGI. It is connected directly to a DESD via serial line. It implements the
+client side of the DGI's plug and play protocol, which is defined at [1]. It
+translates the DGI's power level command into the DESD's native format, and
+the DESD's actual power level from the DESD's format into a state message to the
+DGI.
+
+The current version of the DGI, 1.6, does not know how to handle DESDs very
+well. Therefore, we intentionally pretend to be an SST instead. Likely this will
+need to be changed to remain compatible with the upcoming DGI 1.7.
+
+Questions should be directed to Michael Catanzaro <michael.catanzaro@mst.edu>
+or Tom Roth <tprfh7@mst.edu>.
+
+[1] https://github.com/FREEDM-DGI/FREEDM/wiki/Plug-and-play-tcp-protocol
