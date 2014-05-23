@@ -19,12 +19,46 @@
 
 #include "dgi-interface.hpp"
 
-int main()
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
+
+int main(int argc, char* argv[])
 {
     // FIXME catch SIGINT, SIGTERM and stop DESD before quitting
     // (may or may not be important :-)
 
-    // FIXME should not be hardcoded
-    DgiInterface dgi_interface("localhost", "53000", "/dev/ttyS0");
+    po::options_description od;
+    po::variables_map vm;
+    std::string hostname, port, serial_port;
+
+    od.add_options()
+        ("dgi-hostname,h",
+         po::value<std::string>(&hostname)->default_value("localhost"),
+         "hostname of DGI")
+        ("dgi-port,p",
+         po::value<std::string>(&port)->default_value("53000"),
+         "DGI TCP port to connect to")
+        ("serial-port,t",
+         po::value<std::string>(&serial_port)->default_value("/dev/ttyS0"),
+         "serial terminal connected to DESD")
+        ("help,h", "print help")
+        ("version,V", "print version");
+
+    po::store(po::command_line_parser(argc, argv).options(od).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help"))
+    {
+        std::cout << od << std::endl;
+        return 0;
+    }
+    else if (vm.count("version"))
+    {
+        std::cout << "1.0" << std::endl;
+        return 0;
+    }
+
+    DgiInterface dgi_interface(hostname, port, serial_port);
     dgi_interface.Run();
 }

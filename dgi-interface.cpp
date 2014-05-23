@@ -27,6 +27,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace {
 
@@ -36,6 +37,8 @@ const std::string device_type = "Sst";
 const std::string device_signal = "gateway";
 
 const float null_command = std::pow(10, 8);
+
+boost::posix_time::time_duration delay_time = boost::posix_time::seconds(2);
 
 }
 
@@ -150,8 +153,7 @@ void DgiInterface::SendState()
     std::cout << "Successfully sent power level to DGI" << std::endl;
 
     // FIXME timeout must not be hardcoded
-    boost::asio::deadline_timer timer(m_io_service,
-                                      boost::posix_time::seconds(2));
+    boost::asio::deadline_timer timer(m_io_service, delay_time);
     timer.async_wait(boost::bind(&DgiInterface::RelayCommand, this));
 }
 
@@ -191,8 +193,7 @@ void DgiInterface::RelayCommand()
     }
 
     // FIXME timeout must not be hardcoded
-    boost::asio::deadline_timer timer(m_io_service,
-                                      boost::posix_time::seconds(2));
+    boost::asio::deadline_timer timer(m_io_service, delay_time);
     timer.async_wait(boost::bind(&DgiInterface::SendState, this));
 }
 
