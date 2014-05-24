@@ -37,10 +37,13 @@ DesdInterface::DesdInterface(boost::asio::io_service& io_service,
     : IOInterface(m_serial_port),
       m_serial_port(io_service, serial_port)
 {
+    ConfigureSerialPort();
+
     std::cout << "Discarding DESD's intro prompt" << std::endl;
     // The end of the prompt is the string "DESD"
     (void) ReadUntil('D');
     (void) ReadUntil('D');
+
     Start();
 }
 
@@ -135,6 +138,25 @@ void DesdInterface::SetPowerLevel(float power_level)
 
     std::cout << "Discarding DESD's response to power command" << std::endl;
     (void) ReadUntil('A');
+}
+
+/**
+ * Configures the serial port with the settings expected by the DESD.
+ */
+void DesdInterface::ConfigureSerialPort()
+{
+    m_serial_port.set_option(
+        boost::asio::serial_port::baud_rate(9600));
+    m_serial_port.set_option(
+        boost::asio::serial_port::flow_control(
+            boost::asio::serial_port::flow_control::none));
+    m_serial_port.set_option(
+        boost::asio::serial_port::parity(
+            boost::asio::serial_port::parity::none));
+    m_serial_port.set_option(
+        boost::asio::serial_port::stop_bits(
+            boost::asio::serial_port::stop_bits::one));
+    m_serial_port.set_option(boost::asio::serial_port::character_size(8));
 }
 
 /**

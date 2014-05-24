@@ -46,6 +46,8 @@ public:
     void SetPowerLevel(float power_level);
 
 private:
+    /// Configures the serial port with the correct settings
+    void ConfigureSerialPort();
     /// Reads from the DESD up through until
     std::string ReadUntil(char until);
     /// Writes to the DESD
