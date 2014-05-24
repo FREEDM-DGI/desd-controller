@@ -41,6 +41,7 @@ DesdInterface::DesdInterface(boost::asio::io_service& io_service,
     // The end of the prompt is the string "DESD"
     (void) ReadUntil('D');
     (void) ReadUntil('D');
+    Start();
 }
 
 /**
