@@ -151,7 +151,6 @@ void DgiInterface::SendState()
           DEVICE_NAME + " " + device_signal + " " + power_level + "\r\n");
     std::cout << "Successfully sent power level to DGI" << std::endl;
 
-    // FIXME timeout must not be hardcoded
     boost::asio::deadline_timer timer(m_io_service, delay_time);
     timer.async_wait(boost::bind(&DgiInterface::RelayCommand, this));
 }
@@ -191,7 +190,6 @@ void DgiInterface::RelayCommand()
         std::cout << "Dropping null command from DGI" << std::endl;
     }
 
-    // FIXME timeout must not be hardcoded
     boost::asio::deadline_timer timer(m_io_service, delay_time);
     timer.async_wait(boost::bind(&DgiInterface::SendState, this));
 }
