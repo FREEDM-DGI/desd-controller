@@ -48,6 +48,8 @@ public:
 private:
     /// Configures the serial port with the correct settings
     void ConfigureSerialPort();
+    /// Flush all data currently in the serial port buffer
+    void FlushSerialPort();
     /// Reads from the DESD up through until
     std::string ReadUntil(char until);
     /// Writes to the DESD

@@ -25,6 +25,7 @@
 #include <sstream>
 
 #include <boost/lexical_cast.hpp>
+#include <termios.h>
 
 /**
  * Constructs a DesdInterface. Reads and discards the prompt it sends us.
@@ -38,6 +39,7 @@ DesdInterface::DesdInterface(boost::asio::io_service& io_service,
       m_serial_port(io_service, serial_port)
 {
     ConfigureSerialPort();
+    FlushSerialPort();
 
     std::cout << "Discarding DESD's intro prompt" << std::endl;
     // The end of the prompt is the string "DESD"
@@ -157,6 +159,15 @@ void DesdInterface::ConfigureSerialPort()
         boost::asio::serial_port::stop_bits(
             boost::asio::serial_port::stop_bits::one));
     m_serial_port.set_option(boost::asio::serial_port::character_size(8));
+}
+
+/**
+ * Flushes all data currently in the serial port buffer, out of an abundence of
+ * caution. All incomplete I/O will be discarded.
+ */
+void DesdInterface::FlushSerialPort()
+{
+    ::tcflush(m_serial_port.native_handle(), TCIOFLUSH);
 }
 
 /**
