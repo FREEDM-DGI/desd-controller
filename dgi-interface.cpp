@@ -79,8 +79,7 @@ void DgiInterface::Run()
         }
         catch (std::exception& e)
         {
-            std::cout << "Reconnecting after DGI error:\n" << e.what();
-            std::cout.flush();
+            std::cout << "Reconnecting after error:\n" << e.what() << std::endl;
             Disconnect();
         }
     }
