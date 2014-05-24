@@ -42,8 +42,7 @@ int main(int argc, char* argv[])
         ("serial-port,t",
          po::value<std::string>(&serial_port)->default_value("/dev/ttyS0"),
          "serial terminal connected to DESD")
-        ("help,h", "print help")
-        ("version,V", "print version");
+        ("help,h", "print help");
 
     po::store(po::command_line_parser(argc, argv).options(od).run(), vm);
     po::notify(vm);
@@ -51,11 +50,6 @@ int main(int argc, char* argv[])
     if (vm.count("help"))
     {
         std::cout << od << std::endl;
-        return 0;
-    }
-    else if (vm.count("version"))
-    {
-        std::cout << "1.0" << std::endl;
         return 0;
     }
 
