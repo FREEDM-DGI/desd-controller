@@ -67,14 +67,7 @@ public:
      */
     virtual std::string ReadLine()
     {
-        boost::asio::read_until(m_stream, m_streambuf, '\n');
-
-        std::istream is(&m_streambuf);
-        std::string result;
-        std::getline(is, result);
-        result += '\n'; // getline discards delimiter
-
-        return result;
+        return ReadUntil('\n');
     }
 
     /**
