@@ -1,6 +1,6 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
- *  common.hpp
+ *  io-interface.hpp
  *
  *  Author: Michael Catanzaro <michael.catanzaro@mst.edu>
  *
