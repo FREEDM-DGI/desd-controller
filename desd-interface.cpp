@@ -119,7 +119,7 @@ float DesdInterface::GetPowerLevel()
  */
 void DesdInterface::SetPowerLevel(float power_level)
 {
-    const std::streamsize COMMAND_FIELD_WIDTH = 7;
+    const std::streamsize COMMAND_FIELD_WIDTH = 6;
 
     std::ostringstream ss;
     // If value is negative, first character is the minus sign
