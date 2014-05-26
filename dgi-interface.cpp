@@ -143,27 +143,10 @@ void DgiInterface::ReceiveStart()
  */
 void DgiInterface::SendState()
 {
-    // FIXME this is a workaround for nonsense states we sometimes
-    // receive from the DESD (nonsense = not convertable to float)
-    static std::string last_reasonable_state;
-    std::string power_level;
-
     std::cout << "Requesting power level from DESD..." << std::endl;
-    try
-    {
-        power_level =
-            boost::lexical_cast<std::string>(m_desd_interface.GetPowerLevel());
-        last_reasonable_state = power_level;
-        std::cout << "Got power level from DESD, sending to DGI..." << std::endl;
-
-    }
-    catch (boost::bad_lexical_cast& e)
-    {
-        std::cerr << "Warning: got nonsense power level from DESD" << std::endl;
-        std::cerr << "Sending last reasonable state..." << std::endl;
-        power_level = last_reasonable_state;
-    }
-
+    std::string power_level =
+        boost::lexical_cast<std::string>(m_desd_interface.GetPowerLevel());
+    std::cout << "Got power level from DESD, sending to DGI..." << std::endl;
     Write("DeviceStates\r\n" +
           DEVICE_NAME + " " + device_signal + " " + power_level + "\r\n");
     std::cout << "Successfully sent power level to DGI" << std::endl;
