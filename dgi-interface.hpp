@@ -46,6 +46,8 @@ private:
     void Connect();
     /// Disconnects from the DGI
     void Disconnect();
+    /// Handles SIGINT and SIGTERM cleanly
+    void CatchSignal(const boost::system::error_code& e, int signum);
     /// Sends a Hello message to the DGI
     void SendHello();
     /// Receives a Start message from the DGI, in response to a Hello
@@ -67,6 +69,8 @@ private:
     std::string m_port;
     /// Connected to the DGI
     boost::asio::ip::tcp::socket m_socket;
+    /// Handles SIGINT, SIGTERM cleanly
+    boost::asio::signal_set m_signal_set;
     /// Serial interface to the attached DESD
     DesdInterface m_desd_interface;
 };

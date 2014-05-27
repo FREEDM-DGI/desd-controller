@@ -25,9 +25,6 @@ namespace po = boost::program_options;
 
 int main(int argc, char* argv[])
 {
-    // FIXME catch SIGINT, SIGTERM and stop DESD before quitting
-    // (may or may not be important :-)
-
     po::options_description od;
     po::variables_map vm;
     std::string hostname, port, serial_port;

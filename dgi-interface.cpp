@@ -28,6 +28,7 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <signal.h>
 
 namespace {
 
@@ -52,8 +53,11 @@ DgiInterface::DgiInterface(std::string hostname, std::string port,
       m_hostname(hostname),
       m_port(port),
       m_socket(m_io_service),
+      m_signal_set(m_io_service, SIGINT, SIGTERM),
       m_desd_interface(m_io_service, terminal)
 {
+    m_signal_set.async_wait(
+        boost::bind(&DgiInterface::CatchSignal, this, _1, _2));
 }
 
 /**
@@ -111,6 +115,19 @@ void DgiInterface::Disconnect()
 {
     m_socket.close();
     std::cout << "Disconnected from the DGI" << std::endl;
+}
+
+/**
+ * Cleanly disconnects from the DGI and stops the DESD.
+ */
+void DgiInterface::CatchSignal(const boost::system::error_code& e, int signum)
+{
+    if (e != boost::asio::error::operation_aborted)
+    {
+        Disconnect();
+        m_desd_interface.Stop();
+        ::raise(signum);
+    }
 }
 
 /**
