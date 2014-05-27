@@ -25,7 +25,9 @@
 
 #include <string>
 
-#include <boost/asio.hpp>
+#include <boost/asio/io_service.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/signal_set.hpp>
 
 /**
  * A class that knows how to talk to the DGI. It uses the DESD interface

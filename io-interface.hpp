@@ -22,7 +22,10 @@
 
 #include <string>
 
-#include <boost/asio.hpp>
+#include <boost/asio/connect.hpp>
+#include <boost/asio/read_until.hpp>
+#include <boost/asio/streambuf.hpp>
+#include <boost/asio/write.hpp>
 
 /**
  * Contains a reference to a stream from which to perform file I/O, plus a
