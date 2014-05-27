@@ -119,6 +119,11 @@ float DesdInterface::GetPowerLevel()
  */
 void DesdInterface::SetPowerLevel(float power_level)
 {
+    if (power_level > 20000)
+        power_level = 20000;
+    else if (power_level < -20000)
+        power_level = -20000;
+
     const std::streamsize COMMAND_FIELD_WIDTH = 6;
 
     std::ostringstream ss;
