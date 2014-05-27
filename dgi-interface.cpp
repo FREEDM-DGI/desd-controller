@@ -126,6 +126,7 @@ void DgiInterface::CatchSignal(const boost::system::error_code& e, int signum)
     {
         Disconnect();
         m_desd_interface.Stop();
+        m_signal_set.remove(signum);
         ::raise(signum);
     }
 }
