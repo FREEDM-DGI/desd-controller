@@ -69,10 +69,10 @@ DgiInterface::~DgiInterface()
  */
 void DgiInterface::Run()
 {
+    m_io_service.post(boost::bind(&DgiInterface::Connect, this));
+
     for (;;)
     {
-        m_io_service.post(boost::bind(&DgiInterface::Connect, this));
-
         try
         {
             m_io_service.run();
@@ -81,6 +81,8 @@ void DgiInterface::Run()
         {
             std::cout << "Reconnecting after error:\n" << e.what() << std::endl;
             Disconnect();
+            boost::asio::deadline_timer timer(m_io_service, delay_time);
+            timer.async_wait(boost::bind(&DgiInterface::Connect, this));
         }
     }
 }
