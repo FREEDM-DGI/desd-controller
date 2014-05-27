@@ -138,13 +138,13 @@ void DesdInterface::SetPowerLevel(float power_level)
         ss.width(COMMAND_FIELD_WIDTH);
     }
     ss.fill('0');
-    ss << static_cast<int>(std::abs(::round(power_level))) << 'i';
+    ss << static_cast<int>(std::abs(::round(power_level))) << 'p';
 
     std::cout << "Sending power command: " << power_level << std::endl;
     Write(ss.str());
 
     std::cout << "Discarding DESD's response to power command" << std::endl;
-    (void) ReadUntil('A');
+    (void) ReadUntil('W');
 }
 
 /**
