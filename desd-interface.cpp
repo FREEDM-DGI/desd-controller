@@ -105,11 +105,7 @@ float DesdInterface::GetPowerLevel()
     response.erase(std::remove(response.begin(), response.end(), ' '),
                    response.end());
 
-    std::cout << "Converting " << response << " to float..." << std::endl;
-    float result = boost::lexical_cast<float>(response);
-    std::cout << "Result: " << result << std::endl;
-
-    return result;
+    return boost::lexical_cast<float>(response);
 }
 
 /**
