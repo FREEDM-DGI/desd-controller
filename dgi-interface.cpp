@@ -27,8 +27,8 @@
 
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <signal.h>
+#include <unistd.h>
 
 namespace {
 
@@ -37,9 +37,8 @@ const std::string DEVICE_NAME = "DESD1";
 const std::string device_type = "Sst";
 const std::string device_signal = "gateway";
 
+const unsigned DELAY_MS = 1000;
 const float null_command = std::pow(10, 8);
-
-boost::posix_time::time_duration delay_time = boost::posix_time::seconds(2);
 
 }
 
@@ -85,8 +84,8 @@ void DgiInterface::Run()
         {
             std::cout << "Reconnecting after error:\n" << e.what() << std::endl;
             Disconnect();
-            boost::asio::deadline_timer timer(m_io_service, delay_time);
-            timer.async_wait(boost::bind(&DgiInterface::Connect, this));
+            ::sleep(DELAY_MS);
+            m_io_service.post(boost::bind(&DgiInterface::Connect, this));
         }
     }
 }
@@ -171,8 +170,8 @@ void DgiInterface::SendState()
           DEVICE_NAME + " " + device_signal + " " + power_level + "\r\n");
     std::cout << "Successfully sent power level to DGI" << std::endl;
 
-    boost::asio::deadline_timer timer(m_io_service, delay_time);
-    timer.async_wait(boost::bind(&DgiInterface::RelayCommand, this));
+    ::sleep(DELAY_MS);
+    m_io_service.post(boost::bind(&DgiInterface::RelayCommand, this));
 }
 
 /**
@@ -210,8 +209,8 @@ void DgiInterface::RelayCommand()
         std::cout << "Dropping null command from DGI" << std::endl;
     }
 
-    boost::asio::deadline_timer timer(m_io_service, delay_time);
-    timer.async_wait(boost::bind(&DgiInterface::SendState, this));
+    ::sleep(DELAY_MS);
+    m_io_service.post(boost::bind(&DgiInterface::SendState, this));
 }
 
 /**
