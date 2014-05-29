@@ -151,7 +151,7 @@ void DgiInterface::ReceiveStart()
 {
     std::cout << "Awaiting start message from DGI..." << std::endl;
     if (ReadMessage() != "Start\r\n")
-        throw std::runtime_error("Received malformed start mesasge");
+        throw std::runtime_error("Received malformed start message");
     std::cout << "Received start message, starting..." << std::endl;
 
     m_io_service.post(boost::bind(&DgiInterface::SendState, this));
