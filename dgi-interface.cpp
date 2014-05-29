@@ -37,7 +37,7 @@ const std::string DEVICE_NAME = "DESD1";
 const std::string device_type = "Sst";
 const std::string device_signal = "gateway";
 
-const unsigned DELAY_MS = 1000;
+const unsigned DELAY_SECONDS = 1;
 const float null_command = std::pow(10, 8);
 
 }
@@ -84,7 +84,7 @@ void DgiInterface::Run()
         {
             std::cout << "Reconnecting after error:\n" << e.what() << std::endl;
             Disconnect();
-            ::sleep(DELAY_MS);
+            ::sleep(DELAY_SECONDS);
             m_io_service.post(boost::bind(&DgiInterface::Connect, this));
         }
     }
@@ -170,7 +170,7 @@ void DgiInterface::SendState()
           DEVICE_NAME + " " + device_signal + " " + power_level + "\r\n");
     std::cout << "Successfully sent power level to DGI" << std::endl;
 
-    ::sleep(DELAY_MS);
+    ::sleep(DELAY_SECONDS);
     m_io_service.post(boost::bind(&DgiInterface::RelayCommand, this));
 }
 
@@ -209,7 +209,7 @@ void DgiInterface::RelayCommand()
         std::cout << "Dropping null command from DGI" << std::endl;
     }
 
-    ::sleep(DELAY_MS);
+    ::sleep(DELAY_SECONDS);
     m_io_service.post(boost::bind(&DgiInterface::SendState, this));
 }
 
