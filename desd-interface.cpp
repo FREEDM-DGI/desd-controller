@@ -59,9 +59,7 @@ DesdInterface::~DesdInterface()
 }
 
 /**
- * Reads and discards the welcome header sent to us by the DESD, starts
- * current injection (don't know what this means), and blocks until all this
- * has been done.
+ * Starts current injection (probably important?)
  */
 void DesdInterface::Start()
 {

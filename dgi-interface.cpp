@@ -33,11 +33,11 @@
 namespace {
 
 /* We pretend to be an SST for compatibility with DGI v1.6 */
-const std::string DEVICE_NAME = "DESD1";
+const std::string device_name = "DESD1";
 const std::string device_type = "Sst";
 const std::string device_signal = "gateway";
 
-const unsigned DELAY_SECONDS = 1;
+const unsigned delay_seconds = 1;
 const float null_command = std::pow(10, 8);
 
 }
@@ -84,7 +84,7 @@ void DgiInterface::Run()
         {
             std::cout << "Reconnecting after error:\n" << e.what() << std::endl;
             Disconnect();
-            ::sleep(DELAY_SECONDS);
+            ::sleep(delay_seconds);
             m_io_service.post(boost::bind(&DgiInterface::Connect, this));
         }
     }
@@ -138,7 +138,7 @@ void DgiInterface::SendHello()
     std::cout << "Sending Hello message to DGI..." << std::endl;
     Write("Hello\r\n"
           "desd-controller\r\n" +
-          device_type + " " + DEVICE_NAME + "\r\n");
+          device_type + " " + device_name + "\r\n");
     std::cout << "Successfully sent Hello" << std::endl;
 
     m_io_service.post(boost::bind(&DgiInterface::ReceiveStart, this));
@@ -151,7 +151,7 @@ void DgiInterface::ReceiveStart()
 {
     std::cout << "Awaiting start message from DGI..." << std::endl;
     if (ReadMessage() != "Start\r\n")
-        throw std::runtime_error("Received malformed start mesasge");
+        throw std::runtime_error("Received malformed start message");
     std::cout << "Received start message, starting..." << std::endl;
 
     m_io_service.post(boost::bind(&DgiInterface::SendState, this));
@@ -167,10 +167,10 @@ void DgiInterface::SendState()
         boost::lexical_cast<std::string>(m_desd_interface.GetPowerLevel());
     std::cout << "Got power level from DESD, sending to DGI..." << std::endl;
     Write("DeviceStates\r\n" +
-          DEVICE_NAME + " " + device_signal + " " + power_level + "\r\n");
+          device_name + " " + device_signal + " " + power_level + "\r\n");
     std::cout << "Successfully sent power level to DGI" << std::endl;
 
-    ::sleep(DELAY_SECONDS);
+    ::sleep(delay_seconds);
     m_io_service.post(boost::bind(&DgiInterface::RelayCommand, this));
 }
 
@@ -187,7 +187,7 @@ void DgiInterface::RelayCommand()
     if (!iss || word != "DeviceCommands")
         throw std::runtime_error("Received unexpected message type");
     iss >> std::ws >> word;
-    if (!iss || word != DEVICE_NAME)
+    if (!iss || word != device_name)
         throw std::runtime_error("Unexpected device in DeviceCommands message");
     iss >> word;
     if (!iss || word != device_signal)
@@ -209,7 +209,7 @@ void DgiInterface::RelayCommand()
         std::cout << "Dropping null command from DGI" << std::endl;
     }
 
-    ::sleep(DELAY_SECONDS);
+    ::sleep(delay_seconds);
     m_io_service.post(boost::bind(&DgiInterface::SendState, this));
 }
 
